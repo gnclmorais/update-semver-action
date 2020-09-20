@@ -1,0 +1,12 @@
+on:
+  push:
+    tags:
+      - v*.*.*
+
+jobs:
+  hello_world_job:
+    runs-on: ubuntu-latest
+    name: Debugging job
+    steps:
+      - uses: actions/checkout@v2
+      - uses: gnclmorais/update-semver-action@v1

@@ -1,0 +1,31 @@
+name: 'update-sermver-action'
+description: 'Keeps action’s version up to date with git tags'
+runs:
+  using: 'composite'
+  steps:
+    - shell: bash
+      run: |
+        # Fetch all tags
+        git fetch --tags --force
+
+        # Calculate the major and minor versions of the latest tag
+        export LATEST_VERSION=$(git tag -l --sort=-v:refname | head -n 1)
+        export LATEST_MAJOR=$(echo $LATEST_VERSION | cut -d. -f1)
+        export LATEST_MINOR=${LATEST_VERSION%.*}
+
+        versions=( $LATEST_MAJOR $LATEST_MINOR )
+        for version in "${versions[@]}"
+        do
+          # Delete the tag if already exists
+          if [ $(git tag -l $version) ]; then git tag -d $version; fi
+
+          # Recreate the tag pointing now to a new commit
+          if git tag $version ; then
+            echo "Created new tag '$version' (is $(git log $version -n 1 --pretty=%h) now)"
+          else
+            echo "Error creating tag '$version'"
+          fi
+        done
+
+        # Update new version
+        git push origin tag "${versions[@]}" --force
