@@ -6,7 +6,7 @@ on:
 jobs:
   hello_world_job:
     runs-on: ubuntu-latest
-    name: Debugging job
+    name: Update semantic versioning
     steps:
       - uses: actions/checkout@v2
       - uses: gnclmorais/update-semver-action@v1
